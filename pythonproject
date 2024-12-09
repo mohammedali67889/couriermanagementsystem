@@ -1,0 +1,89 @@
+import time
+import random
+from rich import print
+from rich.panel import Panel
+from rich.table import Table
+from rich.prompt import Prompt, Confirm
+
+def main_menu():
+    table = Table(title="[bold blue]Courier Management System[/bold blue]")
+    table.add_column("Option", style="cyan", no_wrap=True)
+    table.add_column("Description", style="magenta")
+
+    table.add_row("1", "Track Your Order")
+    table.add_row("2", "Find Your Order")
+    table.add_row("3", "Check Delivery Time")
+    table.add_row("4", "Exit")
+
+    print(table)
+    choice = Prompt.ask("[bold]Enter your choice[/bold]", choices=["1", "2", "3", "4"])
+    return choice
+
+def authenticate_user():
+    print(Panel("[bold blue]Authentication Required[/bold blue]"))
+    order_id = Prompt.ask("[bold]Enter your Order ID[/bold]")
+    mobile_number = Prompt.ask("[bold]Enter your Mobile Number[/bold]")
+    otp = random.randint(1000, 9999)
+    print(f"[bold]OTP sent to your mobile: {otp}[/bold]")
+
+    user_otp_str = Prompt.ask("[bold]Enter the OTP[/bold]", console=None)  # Get input as string
+    try:
+        user_otp = int(user_otp_str)  # Convert to integer only if successful
+    except ValueError:
+        print("[bold red]Invalid OTP format. Please try again.[/bold red]")
+        return False, None
+
+    if user_otp == otp:
+        print(Panel("[bold green]Authentication Successful[/bold green]"))
+        return True, order_id
+    else:
+        print(Panel("[bold red]Authentication Failed[/bold red]"))
+        return False, None
+
+def track_order(order_id):
+    print(f"[bold]Fetching tracking details for Order ID: {order_id}[/bold]")
+    time.sleep(2)
+    print(Panel("[bold green]Your order is currently in transit.[/bold green]"))
+    print("[bold]Simulated Map: [Your package is near the delivery destination][/bold]\n")
+
+def find_order(order_id):
+    print(f"[bold]Searching details for Order ID: {order_id}[/bold]")
+    time.sleep(2)
+    print(Panel("[bold green]Order Details Found:[/bold green]"))
+    print(f"[bold]Order ID: {order_id}[/bold]")
+    print("[bold]Status: In Transit[/bold]")
+    print("[bold]Expected Delivery: Tomorrow[/bold]\n")
+
+def check_delivery_time(order_id):
+    print(f"[bold]Calculating delivery time for Order ID: {order_id}[/bold]")
+    time.sleep(2)
+    print(Panel("[bold green]Expected Delivery Time: 3 hours from now[/bold green]\n"))
+
+def courier_management_system():
+    while True:
+        choice = main_menu()
+
+        if choice == "1":
+            authenticated, order_id = authenticate_user()
+            if authenticated:
+                track_order(order_id)
+
+        elif choice == "2":
+            authenticated, order_id = authenticate_user()
+            if authenticated:
+                find_order(order_id)
+
+        elif choice == "3":
+            authenticated, order_id = authenticate_user()
+            if authenticated:
+                check_delivery_time(order_id)
+
+        elif choice == "4":
+            print("[bold]Exiting the system. Thank you![/bold]")
+            break
+
+        else:
+            print("[bold red]Invalid choice. Please try again.[/bold red]")
+
+if _name_ == "_main_":
+    courier_management_system()
